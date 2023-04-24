@@ -1,4 +1,6 @@
 import requests
+import os
+from twilio.rest import Client
 
 STOCK = "TSLA"
 COMPANY_NAME = "Tesla Inc"
@@ -34,8 +36,21 @@ news_data = news_res.json()["articles"][0:3]
 
 
 ## STEP 3: Use https://www.twilio.com
-# Send a seperate message with the percentage change and each article's title and description to your phone number. 
+# Send a separate message with the percentage change and each article's title and description to your phone number.
+account_sid = os.environ['TWILIO_ACCOUNT_SID']
+auth_token = os.environ['TWILIO_AUTH_TOKEN']
+from_number = os.environ['TWILIO_FROM_NUMBER']
+to_number = os.environ['TWILIO_TO_NUMBER']
 
+client = Client(account_sid, auth_token)
+
+message = client.messages.create(
+                              from_=from_number,
+                              body='Twilio message test.',
+                              to=to_number
+                          )
+
+print(message.sid)
 
 # Optional: Format the SMS message like this:
 """
