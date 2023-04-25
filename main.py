@@ -17,40 +17,52 @@ stock_params = {
 }
 
 stock_res = requests.get(stock_url, stock_params)
+stock_data = stock_res.json()["Time Series (Daily)"]
+stock_price = []
+
+for stock in stock_data:
+    stock_price.append(stock_data[stock]["4. close"])
+
+current_day = float(stock_price[0])
+previous_day = float(stock_price[1])
+diff = current_day - previous_day
+five_percent = round((current_day/100) * 5, 2)
+
+print(diff)
 
 ## STEP 2: Use https://newsapi.org
 # Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME.
-news_api = "6f93244a3f664550b2b409c0caf78a3a"
-news_url = "https://newsapi.org/v2/everything"
-
-news_params = {
-    "q": COMPANY_NAME,
-    "from": "2023-03-23",
-    "sortBy": "publishedAt",
-    "apiKey": news_api
-}
-
-news_res = requests.get(news_url, news_params)
-news_data = news_res.json()["articles"][0:3]
+# news_api = "6f93244a3f664550b2b409c0caf78a3a"
+# news_url = "https://newsapi.org/v2/everything"
+#
+# news_params = {
+#     "q": COMPANY_NAME,
+#     "from": "2023-03-23",
+#     "sortBy": "publishedAt",
+#     "apiKey": news_api
+# }
+#
+# news_res = requests.get(news_url, news_params)
+# news_data = news_res.json()["articles"][0:3]
 
 
 
 ## STEP 3: Use https://www.twilio.com
 # Send a separate message with the percentage change and each article's title and description to your phone number.
-account_sid = os.environ['TWILIO_ACCOUNT_SID']
-auth_token = os.environ['TWILIO_AUTH_TOKEN']
-from_number = os.environ['TWILIO_FROM_NUMBER']
-to_number = os.environ['TWILIO_TO_NUMBER']
+# account_sid = os.environ['TWILIO_ACCOUNT_SID']
+# auth_token = os.environ['TWILIO_AUTH_TOKEN']
+# from_number = os.environ['TWILIO_FROM_NUMBER']
+# to_number = os.environ['TWILIO_TO_NUMBER']
+#
+# client = Client(account_sid, auth_token)
+#
+# message = client.messages.create(
+#                               from_=from_number,
+#                               body='Twilio message test.',
+#                               to=to_number
+#                           )
 
-client = Client(account_sid, auth_token)
-
-message = client.messages.create(
-                              from_=from_number,
-                              body='Twilio message test.',
-                              to=to_number
-                          )
-
-print(message.sid)
+# print(message.sid)
 
 # Optional: Format the SMS message like this:
 """
