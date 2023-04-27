@@ -57,7 +57,7 @@ if diff_percentage > 3:
     for article in news_data:
         description = article["description"]
         title = article["title"]
-        sms_message = f"{STOCK}: {diff_percentage}\n Headline: {title}\n Brief: {description}"
+        sms_message = f"{STOCK}: {diff_percentage} \nHeadline: {title} \nBrief: {description}"
         message = client.messages.create(
                                       from_=from_number,
                                       body=sms_message,
