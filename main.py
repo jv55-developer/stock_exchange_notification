@@ -5,7 +5,7 @@ from twilio.rest import Client
 STOCK = "TSLA"
 COMPANY_NAME = "Tesla Inc"
 
-# STEP 1: Use https://www.alphavantage.co
+## STEP 1: Use https://www.alphavantage.co
 # When STOCK price increase/decreases by 5% between yesterday and the day before yesterday then print("Get News").
 stock_api = os.environ['STOCK_API']
 stock_url = "https://www.alphavantage.co/query?"
@@ -25,12 +25,10 @@ for stock in stock_data:
 
 current_day = float(stock_price[0])
 previous_day = float(stock_price[1])
-diff = previous_day - current_day
-five_percent_pos = round((current_day/100) * 3, 2)
-five_percent_neg = round((current_day/100) * -3, 2)
-diff_percent = round(diff/(current_day/100), 2)
+diff = abs(current_day - previous_day)
+diff_percentage = round(((diff/current_day)*100), 2)
 
-# STEP 2: Use https://newsapi.org
+## STEP 2: Use https://newsapi.org
 # Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME.
 news_api = os.environ["NEWS_API"]
 news_url = "https://newsapi.org/v2/everything"
@@ -45,7 +43,7 @@ news_params = {
 news_res = requests.get(news_url, news_params)
 news_data = news_res.json()["articles"][0:3]
 
-# STEP 3: Use https://www.twilio.com
+## STEP 3: Use https://www.twilio.com
 # Send a separate message with the percentage change and each article's title and description to your phone number.
 account_sid = os.environ["TWILIO_SID"]
 auth_token = os.environ["TWILIO_AUTH_TOKEN"]
@@ -54,12 +52,12 @@ to_number = os.environ["TO_NUMBER"]
 
 client = Client(account_sid, auth_token)
 
-if diff >= five_percent_pos or diff <= five_percent_neg:
+if diff_percentage > 3:
 
     for article in news_data:
         description = article["description"]
         title = article["title"]
-        sms_message = f"{STOCK}: {diff_percent}\n Headline: {title}\n Brief: {description}"
+        sms_message = f"{STOCK}: {diff_percentage}\n Headline: {title}\n Brief: {description}"
         message = client.messages.create(
                                       from_=from_number,
                                       body=sms_message,
